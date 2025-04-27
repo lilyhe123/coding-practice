@@ -1,0 +1,24 @@
+# .pre-commit-config.yaml
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.5.0
+    hooks:
+      - id: check-yaml
+      - id: end-of-file-fixer
+      - id: trailing-whitespace
+
+  # code formatters
+  - repo: https://github.com/psf/black
+    rev: 25.1.0
+    hooks:
+      - id: black
+  # A popular Python linter that combines pycodestyle, pyflakes, and McCabe complexity.
+  #- repo: https://github.com/PyCQA/flake8
+  #  rev: 7.2.0
+  #  hooks:
+  #    - id: flake8
+  # Sorts Python imports alphabetically and automatically separates them into sections
+  - repo: https://github.com/pycqa/isort
+    rev: 6.0.1
+    hooks:
+      - id: isort

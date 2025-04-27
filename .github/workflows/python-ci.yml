@@ -28,4 +28,4 @@ jobs:
 
       - name: Run tests
         run: |
-          pytest  # Run your tests using pytest
+          pytest *.py  # Run your tests using pytest
