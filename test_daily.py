@@ -7,36 +7,10 @@ import matplotlib.pyplot as plt
 import numpy as np
 import heapq
 
-# uncomments the following line to debug stack overflow error
+# uncomments the following line when need to debug stack overflow error
 # sys.setrecursionlimit(10)
 
-# Solving some coding challenges from time to time. It's a good way to keep my coding brain and arms sharp and keep practice my problem-solving skills.
-
-
 # 1 - 365
-'''
-Programming isn't just about creating software; it's a cognitive workout that reshapes how our brains process information, solve problems, and even perceive the world around us. As both a programmer and a technology enthusiast, I've witnessed firsthand how coding has transformed my thinking patterns and problem-solving approaches. In this article, we'll explore the fascinating ways programming influences our cognitive abilities and potentially rewires our brains.
-
-Problem-Solving and Logical Reasoning: Building Mental Muscles
-Programming is essentially an extended exercise in problem-solving. When developers face a complex task, they instinctively break it down into smaller, manageable components — a process known as decomposition. This systematic approach to problem-solving becomes second nature, extending beyond coding to influence how programmers tackle challenges in their daily lives.
-
-Knowledge Base
-
-set operations
-union 并集, intersaction 交集, complement 补集, difference 差集
-
-subarray: brute-force time O(n^3), if sliding-window can be applied, time O(n)
-subsequence/subset: brute-force time O(2^n), 
-  if can use DP, to calculate every element in dp, visit all its previous elements in dp, time O(n^2)
-
-
-Graph Algorithm
-single-source shortest path problem(for weighted dircted graph)
--  Bellman–Ford algorithm
--  Dijkstra's algorithm 
-'''
-
-
 '''
 !! question 1
 Given a list of numbers and a number k, return whether any two numbers from the list add up to k.
