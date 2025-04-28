@@ -8,7 +8,7 @@
 	<a href="https://github.com/psf/black"><img alt="Code style: black" src="https://img.shields.io/badge/code%20style-black-000000.svg"></a>
 </p>
 
-Track my progress writting Python code to solve small coding challenges from time to time. It helps keep my coding brain and arms sharp. Most importantly, I really enjoy the process.
+Track my progress writting Python code to solve small coding challenges from time to time. It helps keep my coding brain and arms sharp. Most importantly, I really enjoy it.
 
 It's a tiny project but has been setup some of the essential to ensure code quality.
 - Pre-commit hooks, to lint and format code.
