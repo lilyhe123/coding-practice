@@ -1,24 +1,24 @@
-import heapq
 import random
-import sys
-from collections import deque
-from typing import List
 
 import matplotlib.pyplot as plt
-import numpy as np
 
 # uncomments the following line when need to debug stack overflow error
+# import sys
 # sys.setrecursionlimit(10)
 """
 question 51
-Given a function that generates perfectly random numbers between 1 and k (inclusive), where k is an input, write a function that shuffles a deck of cards represented as an array using only swaps.
+Given a function that generates perfectly random numbers between 1 and k
+(inclusive), where k is an input, write a function that shuffles a deck
+of cards represented as an array using only swaps.
 
 It should run in O(N) time.
 
-Hint: Make sure each one of the 52! permutations of the deck is equally likely.
+Hint: Make sure each one of the 52! permutations of the deck is
+equally likely.
 -------------------
 
-input: random(k) return a peerfectrly random number between 1 and k, k is an input.
+input: random(k) return a peerfectrly random number between 1 and k,
+k is an input.
 contraints: using only swaps?
 every one selection from i cards(i=52,51...1) should have equal probability
 rand(52)*rand(51)
@@ -51,9 +51,12 @@ def test_51():
 
 """
 question 52
-Implement an LRU (Least Recently Used) cache. It should be able to be initialized with a cache size n, and contain the following methods:
+Implement an LRU (Least Recently Used) cache. It should be able to be
+initialized with a cache size n, and contain the following methods:
 
-set(key, value): sets key to value. If there are already n items in the cache and we are adding a new item, then it should also remove the least recently used item.
+set(key, value): sets key to value. If there are already n items in the
+cache and we are adding a new item, then it should also remove the least
+recently used item.
 get(key): gets the value at key. If no such key exists, return null.
 Each operation should run in O(1) time.
 -------------------
@@ -61,11 +64,13 @@ Each operation should run in O(1) time.
 double linked list:  ordered in the recently used time. remove/add, O(1) time
   Node: key, value, pre, next
 Hashmap<K, Integer>: key -> Node
-get(): if exist, remove from the current place and add to the head of the queue
+get(): if exist, remove from the current place and add to
+       the head of the queue
        if not exist, return null
 
 set(): if exist, update its value and move it to the head of the list
-       if not exist, add to the head of the list. if size > N, remove tail element
+       if not exist, add to the head of the list.
+       if size > N, remove tail element
 """
 
 
@@ -171,7 +176,9 @@ def test_52():
 
 """
 question 53
-Implement a queue using two stacks. Recall that a queue is a FIFO (first-in, first-out) data structure with the following methods: enqueue, which inserts an element into the queue, and dequeue, which removes it.
+Implement a queue using two stacks. Recall that a queue is a FIFO
+(first-in, first-out) data structure with the following methods: enqueue,
+which inserts an element into the queue, and dequeue, which removes it.
 -------------------
 
 put: s1.push(e)
@@ -220,7 +227,9 @@ def test_53():
 
 """
 question 54
-Sudoku is a puzzle where you're given a partially-filled 9 by 9 grid with digits. The objective is to fill the grid with the constraint that every row, column, and box (3 by 3 subgrid) must contain all of the digits from 1 to 9.
+Sudoku is a puzzle where you're given a partially-filled 9 by 9 grid with
+digits. The objective is to fill the grid with the constraint that every row,
+column, and box (3 by 3 subgrid) must contain all of the digits from 1 to 9.
 
 Implement an efficient sudoku solver.
 """
@@ -234,8 +243,10 @@ def test_54():
 question 55 TODO
 Implement a URL shortener with the following methods:
 
-shorten(url), which shortens the url into a six-character alphanumeric string, such as zLg6wl.
-restore(short), which expands the shortened string into the original url. If no such shortened string exists, return null.
+shorten(url), which shortens the url into a six-character alphanumeric string,
+such as zLg6wl.
+restore(short), which expands the shortened string into the original url.
+If no such shortened string exists, return null.
 Hint: What if we enter the same URL twice?
 """
 
@@ -246,10 +257,14 @@ def test_55():
 
 """
 question 56
-Given an undirected graph represented as an adjacency matrix and an integer k, write a function to determine whether each vertex in the graph can be colored such that no two adjacent vertices share the same color using at most k colors.
+Given an undirected graph represented as an adjacency matrix and an integer k,
+write a function to determine whether each vertex in the graph can be colored
+such that no two adjacent vertices share the same color
+using at most k colors.
 -------------------
 
-adjacent matrix: 0 means the two vertexes are adjacent with each other, 1 means not adjacent
+adjacent matrix: 0 means the two vertexes are adjacent with each other,
+1 means not adjacent
 [[0, 1, 1],
  [1, 0, 1],
  [1, 1, 0]]
@@ -262,25 +277,40 @@ adjacent matrix: 0 means the two vertexes are adjacent with each other, 1 means 
 2. Brainstorming
 Som special cases
 n is the total number of vertexes.
-- If the graph is a complete graph, every pair of vertice are adjacent, we need at least n colors to color it.
-- If the graph is a tree (a graph with no cycles). We can always color it wit 2 colors. We travel the tree level by level and swap the color when going to next level.
+- If the graph is a complete graph, every pair of vertice are adjacent,
+  we need at least n colors to color it.
+- If the graph is a tree (a graph with no cycles). We can always color it
+  with 2 colors. We travel the tree level by level and swap the color
+  when going to next level.
 - If k = 1, the graph must have no edge (no adjacent vertexes)
 - If k >= n, always true.
 
-Think about the brute-force approach. Every vertex can choose one from k colors. We check all the possible combinations (with n loops) until we find the one that doesn't violate the constraint. Every vertex has k different options to choose and there are total n vertex, so the total number of combinations are k^n.
+Think about the brute-force approach. Every vertex can choose one from k
+colors. We check all the possible combinations (with n loops) until we
+find the one that doesn't violate the constraint. Every vertex has k
+different options to choose and there are total n vertex, so the total
+number of combinations are k^n.
 Time complexity for burte-force approach is O(k^n).
 
 How to optimize it?
 Backtracking
-We try to color vertices one by one. At each step choose one color for the vertex without vilating the constraints. If at one step no feasible color to the vertex, backtrack to previous steps and try other feasible colors until we find a feasible color arrangement or exhaust all possible combinations.
+We try to color vertices one by one. At each step choose one color for
+the vertex without vilating the constraints. If at one step no feasible
+color to the vertex, backtrack to previous steps and try other feasible
+colors until we find a feasible color arrangement or exhaust all
+possible combinations.
 
 !! time complexity
 within each recursive call, it decide the color for current vertex.
-The recursive call travels a complete k-ary tree with n depths. In the worst case it need to travel all nodes in the tree. The total number of nodes in the tree is the same complexity of k^n.
+The recursive call travels a complete k-ary tree with n depths.
+In the worst case it need to travel all nodes in the tree. The total
+number of nodes in the tree is the same complexity of k^n.
 So time complexity is O(k^n).
 
 space complexity
-- We create addtional data structure to store the candidate colors for each vertex. The colors list stores N elements and each element is a set with k size. So its space is O(nk)
+- We create addtional data structure to store the candidate colors
+  for each vertex. The colors list stores N elements and each element is
+  a set with k size. So its space is O(nk)
 - The recursion depth is n. so its space is O(n).
 So space complexity is O(nk)
 """
@@ -344,11 +374,18 @@ def test_56():
 
 """
 question 57
-Given a string s and an integer k, break up the string into multiple lines such that each line has a length of k or less. You must break it up so that words don't break across lines. Each line has to have the maximum possible amount of words. If there's no way to break the text up, then return null.
+Given a string s and an integer k, break up the string into multiple lines
+such that each line has a length of k or less. You must break it up so that
+words don't break across lines. Each line has to have the maximum possible
+amount of words. If there's no way to break the text up, then return null.
 
-You can assume that there are no spaces at the ends of the string and that there is exactly one space between each word.
+You can assume that there are no spaces at the ends of the string and that
+there is exactly one space between each word.
 
-For example, given the string "the quick brown fox jumps over the lazy dog" and k = 10, you should return: ["the quick", "brown fox", "jumps over", "the lazy", "dog"]. No string in the list has a length of more than 10.
+For example, given the string "the quick brown fox jumps over the lazy dog"
+and k = 10, you should return:
+["the quick", "brown fox", "jumps over", "the lazy", "dog"].
+No string in the list has a length of more than 10.
 -------------------
 
 k = 10
@@ -362,7 +399,8 @@ time complexity:
 So overall time complexity is O(n+m).
 
 space complexity:
-We create data structure to store words and lines. So space complexity is O(m).
+We create data structure to store words and lines.
+So space complexity is O(m).
 
 """
 
@@ -400,9 +438,11 @@ def test_57():
 question 58
 An sorted array of integers was rotated an unknown number of times.
 
-Given such an array, find the index of the element in the array in faster than linear time. If the element doesn't exist in the array, return null.
+Given such an array, find the index of the element in the array in faster
+than linear time. If the element doesn't exist in the array, return null.
 
-For example, given the array [13, 18, 25, 2, 8, 10] and the element 8, return 4 (the index of 8 in the array).
+For example, given the array [13, 18, 25, 2, 8, 10] and the element 8,
+return 4 (the index of 8 in the array).
 
 You can assume all the integers in the array are unique.
 -------------------
@@ -414,7 +454,9 @@ for any subrange[left, right]
 - if left > right, the turning point is included. The subarray is not sorted
 - if left < right, the turning point is not included. The subarray is sorted.
 
-So we can only rely on the sorted subarray to check whether the target is in it or not. If yes, we keep search in this half, otherwise we search on the other halp
+So we can only rely on the sorted subarray to check whether the target
+is in it or not. If yes, we keep search in this half,
+otherwise we search on the other halp
 
 start, mid, end
 if target == nums[mid]: return mid
@@ -457,11 +499,15 @@ def test_58():
 
 
 """
-question 59
-Implement a file syncing algorithm for two computers over a low-bandwidth network. What if we know the files in the two computers are mostly the same?
+question 59 TODO
+Implement a file syncing algorithm for two computers over a low-bandwidth
+network. What if we know the files in the two computers are mostly the same?
 -------------------
 
-This problem can be tackled with block-level syncing and delta encoding, using well-established techniques from tools like rsync. The trick is to minimize the data transfered while ensuring both computers remain synchronized.
+This problem can be tackled with block-level syncing and delta encoding,
+using well-established techniques from tools like rsync. The trick is
+to minimize the data transfered while ensuring both computers
+remain synchronized.
 
 - Merkle tree algorithm
 - rsync algorithm
@@ -472,7 +518,8 @@ MarkTree:
 from hashlib import md5
 
 
-# MarkleTree is a binary tree, every node mostly has two child: left and right.
+# MarkleTree is a binary tree, every node mostly has two child:
+# left and right.
 class MarkleNode:
     def __init__(self, hash, left=None, right=None):
         self.hash = hash
@@ -601,11 +648,15 @@ def test_59():
 
 """
 question 60
-Given a multiset of integers, return whether it can be partitioned into two subsets whose sums are the same.
+Given a multiset of integers, return whether it can be partitioned into two
+subsets whose sums are the same.
 
-For example, given the multiset {15, 5, 20, 10, 35, 15, 10}, it would return true, since we can split it up into {15, 5, 10, 15, 10} and {20, 35}, which both add up to 55.
+For example, given the multiset {15, 5, 20, 10, 35, 15, 10}, it would return
+true, since we can split it up into {15, 5, 10, 15, 10} and {20, 35},
+which both add up to 55.
 
-Given the multiset {15, 5, 20, 10, 35}, it would return false, since we can't split it up into two subsets that add up to the same sum.
+Given the multiset {15, 5, 20, 10, 35}, it would return false, since we
+can't split it up into two subsets that add up to the same sum.
 -------------------
 
 target = 55
@@ -618,11 +669,14 @@ target = 55
 20
 change to problem to find a subset to a target value
 
-1. brute-force: for every number, two options: choose it or not. Iterate all combination and calculate the sum, if the sum is equal to the target, return True. time O(2^n), space O(1).
+1. brute-force: for every number, two options: choose it or not. Iterate all
+combination and calculate the sum, if the sum is equal to the target, return
+True. time O(2^n), space O(1).
 
 2. recursion with memorization
   !! how to analyze the time and space complexity
-  time O(n*m), space O(n*m), n is the size of given array and m is the half of the sum of the given array.
+  time O(n*m), space O(n*m), n is the size of given array and m is the half
+  of the sum of the given array.
 
 """
 
@@ -657,7 +711,8 @@ def test_60():
 
 """
 question 61
-Implement integer exponentiation. That is, implement the pow(x, y) function, where x and y are integers and returns x^y.
+Implement integer exponentiation. That is, implement the pow(x, y) function,
+where x and y are integers and returns x^y.
 Do this faster than the naive method of repeated multiplication.
 For example, pow(2, 10) should return 1024.
 -------------------
@@ -701,9 +756,12 @@ def test_61():
 
 """
 question 62
-There is an N by M matrix of zeroes. Given N and M, write a function to count the number of ways of starting at the top-left corner and getting to the bottom-right corner. You can only move right or down.
+There is an N by M matrix of zeroes. Given N and M, write a function to count
+the number of ways of starting at the top-left corner and getting to the
+bottom-right corner. You can only move right or down.
 
-For example, given a 2 by 2 matrix, you should return 2, since there are two ways to get to the bottom-right:
+For example, given a 2 by 2 matrix, you should return 2, since there are two
+ways to get to the bottom-right:
 
 Right, then down
 Down, then right
@@ -743,7 +801,9 @@ def test_62():
 
 """
 question 63
-Given a 2D matrix of characters and a target word, write a function that returns whether the word can be found in the matrix by going left-to-right, or up-to-down.
+Given a 2D matrix of characters and a target word, write a function that
+returns whether the word can be found in the matrix by going left-to-right,
+or up-to-down.
 
 For example, given the following matrix:
 
@@ -751,7 +811,9 @@ For example, given the following matrix:
  ['O', 'B', 'Q', 'P'],
  ['A', 'N', 'O', 'B'],
  ['M', 'A', 'S', 'S']]
-and the target word 'FOAM', you should return true, since it's the leftmost column. Similarly, given the target word 'MASS', you should return true, since it's the last row.
+and the target word 'FOAM', you should return true, since it's the
+leftmost column. Similarly, given the target word 'MASS', you should return
+true, since it's the last row.
 -------------------
 
 depth-first traversal in a matrix. time O(nm2^l)
@@ -792,8 +854,10 @@ def test_63():
 
 """
 question 64
-A knight's tour is a sequence of moves by a knight on a chessboard such that all squares are visited once.
-Given N, write a function to return the number of knight's tours on an N by N chessboard.
+A knight's tour is a sequence of moves by a knight on a chessboard such that
+all squares are visited once.
+Given N, write a function to return the number of knight's tours on an
+N by N chessboard.
 -------------------
 
 f(i,j):
@@ -801,7 +865,8 @@ steps: (1,2), (1,-2), (-1, 2), (-1, -2), (2,1), (2, -1), (-2, -1), (-2, 1)
 
 - Exhaust all possible starting point, N*N options.
 - Calculate number of tours for every start point.
-  - DFS: at every step exaust all possible directions without visiting the same squars more than once. time O(8^(n*n))
+  - DFS: at every step exaust all possible directions without visiting
+    the same squars more than once. time O(8^(n*n))
 - sum the numver of tours. time O(1)
 """
 
@@ -915,7 +980,9 @@ def test_65():
 
 """
 question 66
-Assume you have access to a function toss_biased() which returns 0 or 1 with a probability that's not 50-50 (but also not 0-100 or 100-0). You do not know the bias of the coin.
+Assume you have access to a function toss_biased() which returns 0 or 1 with
+a probability that's not 50-50 (but also not 0-100 or 100-0).
+You do not know the bias of the coin.
 
 Write a function to simulate an unbiased coin toss.
 -------------------
@@ -961,9 +1028,14 @@ def test_66():
 
 """
 question 67 TODO
-Implement an LFU (Least Frequently Used) cache. It should be able to be initialized with a cache size n, and contain the following methods:
+Implement an LFU (Least Frequently Used) cache. It should be able to be
+initialized with a cache size n, and contain the following methods:
 
-set(key, value): sets key to value. If there are already n items in the cache and we are adding a new item, then it should also remove the least frequently used item. If there is a tie, then the least recently used key should be removed.
+set(key, value): sets key to value. If there are already n items in the
+cache and we are adding a new item, then it should also remove the least
+frequently used item. If there is a tie,
+then the least recently used key should be removed.
+
 get(key): gets the value at key. If no such key exists, return null.
 Each operation should run in O(1) time.
 """
