@@ -3,7 +3,7 @@
 <h2 align="center">Coding Practice with Python</h2>
 
 <p align="left">
-	<a href="https://github.com/lilyhe123/coding-practice/actions/workflows/python-ci.yml"><img alt="Actions status" src="https://github.com/lilyhe123/coding-practice/actions/workflows/python-ci.yml/badge.svg"</a>
+	<a href="https://github.com/lilyhe123/coding-practice/actions/workflows/tests.yml"><img alt="Actions status" src="https://github.com/lilyhe123/coding-practice/actions/workflows/tests.yml/badge.svg"</a>
 	<a href="https://github.com/psf/black"><img alt="Code style: black" src="https://img.shields.io/badge/code%20style-black-000000.svg"></a>
 </p>
 
