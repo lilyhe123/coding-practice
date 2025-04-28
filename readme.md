@@ -8,6 +8,10 @@
 	<a href="https://github.com/psf/black"><img alt="Code style: black" src="https://img.shields.io/badge/code%20style-black-000000.svg"></a>
 </p>
 
-My pet project to solve small coding challenges with Python from time to time. It helps keep my coding brain and arms sharp. Most importantly, I really enjoy the process to use my problem-solving skills to find a solution and then implement with code.
+Track my progress writting Python code to solve small coding challenges from time to time. It helps keep my coding brain and arms sharp. Most importantly, I really enjoy the process.
 
-This project also demostrates how to configure pre-commit hooks and CI/CD pipelines, to lint and format code, to run tests etc.
+It's a tiny project but has been setup some of the essential to ensure code quality.
+- Pre-commit hooks, to lint and format code.
+- CI build script, to run unit tests.
+- Integrate with Coveralls for test suite's coverage.
+- No CD pipeline configured so far since no package and release requirement.
