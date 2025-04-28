@@ -4,6 +4,7 @@
 
 <p align="left">
 	<a href="https://github.com/lilyhe123/coding-practice/actions/workflows/tests.yml"><img alt="Actions status" src="https://github.com/lilyhe123/coding-practice/actions/workflows/tests.yml/badge.svg"</a>
+	<a href='https://coveralls.io/github/lilyhe123/coding-practice?branch=main'><img src='https://coveralls.io/repos/github/lilyhe123/coding-practice/badge.svg?branch=main' alt='Coverage Status' /></a>
 	<a href="https://github.com/psf/black"><img alt="Code style: black" src="https://img.shields.io/badge/code%20style-black-000000.svg"></a>
 </p>
 
