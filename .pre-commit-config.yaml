@@ -13,10 +13,10 @@ repos:
     hooks:
       - id: black
     # A popular Python linter that combines pycodestyle, pyflakes, and McCabe complexity.
-  # - repo: https://github.com/PyCQA/flake8
-  #   rev: 7.2.0
-  #   hooks:
-  #     - id: flake8
+  - repo: https://github.com/PyCQA/flake8
+    rev: 7.2.0
+    hooks:
+      - id: flake8
   # Sorts Python imports alphabetically and automatically separates them into sections
   - repo: https://github.com/pycqa/isort
     rev: 6.0.1

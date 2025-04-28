@@ -515,7 +515,7 @@ MarkTree:
   construct by a hash list
   getHashByLevel(level)->List
 """
-from hashlib import md5
+# from hashlib import md5
 
 
 # MarkleTree is a binary tree, every node mostly has two child:
