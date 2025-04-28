@@ -10,7 +10,7 @@
 
 Track my progress writting Python code to solve small coding challenges from time to time. It helps keep my coding brain and arms sharp. Most importantly, I really enjoy it.
 
-It's a tiny project but has been setup some of the essential to ensure code quality.
+It's a tiny project but some of the essentials have been setup to ensure code quality.
 - Pre-commit hooks, to lint and format code.
 - CI build script, to run unit tests.
 - Integrate with Coveralls for test suite's coverage.
