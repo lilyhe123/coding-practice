@@ -437,9 +437,9 @@ def maxSum4NonAdjacent(nums):
     return dp1
 
 
-def test__9():
-    print(maxSum4NonAdjacent([2, 4, 6, 2, 5]))
-    print(maxSum4NonAdjacent([10, -1, 1, 2]))
+def test_9():
+    assert maxSum4NonAdjacent([2, 4, 6, 2, 5]) == 13
+    assert maxSum4NonAdjacent([10, -1, 1, 2]) == 12
 
 
 """
@@ -1344,6 +1344,121 @@ def test_23():
     assert getMinSteps(matrix, (3, 0), (0, 0)) == 7
 
 
+"""
+question 24
+Implement locking in a binary tree. A binary tree node can be locked or
+unlocked only if all of its descendants or ancestors are not locked.
+
+Design a binary tree node class with the following methods:
+
+is_locked, which returns whether the node is locked
+lock, which attempts to lock the node. If it cannot be locked, then it should
+return false. Otherwise, it should lock it and return true.
+
+unlock, which unlocks the node. If it cannot be unlocked, then it should
+ return false. Otherwise, it should unlock it and return true.
+
+You may augment the node to add parent pointers or any other property you
+ would like. You may assume the class is used in a single-threaded program,
+ so there is no need for actual locks or mutexes. Each method should run in
+ O(h), where h is the height of the tree.
+-------------------
+
+Based on the description of the problem, the lock/unlock operation can be
+called from any node but all its accestors or decendents needs to be in the
+same status: unlocked or locked. That means the entire binary tree needs to
+behavior consistently. The entire binary tree is either locked or unlocked.
+
+Store the locked/unlocked status in the root node. When try to lock/unlock
+from any node, travel to the root node and check the status and act accordingly.
+We need to add parent pointer to the tree nodes, so traveling from any node to
+the root node takes O(h) time.
+"""
+
+
+def test_24():
+    pass
+
+
+"""
+question 25
+Implement regular expression matching with the following special characters:
+
+. (period) which matches any single character
+* (asterisk) which matches zero or more of the preceding element
+That is, implement a function that takes in a string and a valid regular
+expression and returns whether or not the string matches the regular expression.
+
+For example, given the regular expression "ra." and the string "ray", your
+function should return true. The same regular expression on the string
+"raymond" should return false.
+
+Given the regular expression ".*at" and the string "chat", your function should
+return true. The same regular expression on the string "chats" should return false.
+-------------------
+
+1. recursion and backtracking
+input: pattern, text
+f(i1, i2):
+for ., i1++, i2++
+for *, i1++, i2: i2, i2+1,...i2+n
+others: if pattern[i1] == text[i2]: i1++, i2++; otherwise return
+
+2. In solution #1 we might calculate the same f(i1, i2) multiple times.
+To reduce the duplication, use DP.
+
+populate the DP matrix row by row, only process the up-right half
+  c h s a t s a
+c y n n n n n n
+.   y y y y y y
+*     y y y y y
+t       n y n n
+.         n y y
+
+for any cell, except (0,0), two possible directions to reach here:
+1. from up-left
+2. from left, only when current char in the pattern is '.'.
+
+time O(N*M), space O(M)
+"""
+
+
+def regexMatched(pattern: str, text: str) -> bool:
+    N, M = len(pattern), len(text)
+    if N > M:
+        return False
+    pre = [0] * M
+    cur = [0] * M
+    for row in range(0, N):
+        p = pattern[row]
+        for col in range(row, M):
+            t = text[col]
+            # reach from up-left
+            if (col == 0 or pre[col - 1]) and (p == "*" or p == t or p == "."):
+                cur[col] = 1
+            # reach from left
+            elif (col == 0 or cur[col - 1]) and p == ".":
+                cur[col] = 1
+        # no valid path in this row, no chance to match, fail early
+        if sum(cur) == 0:
+            return False
+        pre = cur
+        cur = [0] * M
+    return pre[M - 1] == 1
+
+
+def test_25():
+    assert regexMatched("c.*t.", "chsatsa")
+    assert regexMatched(".*at", "chat")
+    assert regexMatched(".*at", "sdfdedat")
+    assert not regexMatched("chi.", "chat")
+    assert regexMatched("ch*.", "chatsesd")
+    assert regexMatched("*.", "blablabla")
+    assert regexMatched(".a*", "blablablaay")
+    assert not regexMatched("*a.", "blablablaay")
+
+
+test_25()
 """
 question 32 TODO
 This problem was asked by Jane Street.
