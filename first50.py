@@ -1458,7 +1458,346 @@ def test_25():
     assert not regexMatched("*a.", "blablablaay")
 
 
-test_25()
+"""
+question 26
+
+Given a singly linked list and an integer k, remove the kth last element from
+the list. k is guaranteed to be smaller than the length of the list.
+
+The list is very long, so making more than one pass is prohibitively expensive.
+
+Do this in constant space and in one pass.
+--------------------
+
+It's a single linked list, we can only travel from left to right follwing
+the next pointer in each node.
+
+Use two pointers to travel the linked list from left to right in one pass.
+Initially p1 points to the head of the list, p2 points to the kth element of
+the list. Then p1 and p2 go left along the list with the same pace,
+one step at a time, until p2 reach the end of the list. p1 is pointing to the
+kth last element of the list.
+k = 3
+a -> b -> c -> d -> e -> f -> g
+^         ^
+                    ^         ^
+return 'e'
+"""
+
+
+def test_26():
+    pass
+
+
+"""
+question 27
+Given a string of round, curly, and square open and closing brackets, return
+whether the brackets are balanced (well-formed).
+
+For example, given the string "([])[]({})", you should return true.
+
+Given the string "([)]" or "((()", you should return false.
+---------------------
+
+Instintively, a stack can help use here but why?
+To do this, iterate through the string:
+For every opening, it needs to pair to a later unmatched closing. But considering
+nesting scenarios, an opening can follow up another opening. So we need to reserve
+unmatched openings somewhere. when a closing is comming, it needs to pair with
+the most recent unmatched opening.
+So a stack, as its Last-In-First-Out nature, is a good fit for this
+Iterate through the string, process every bracket:
+- if it's opening, push to the stack.
+- if it's closing, pop from the stack (the stack should be non-empty) and pair them.
+  - If not pair, return early.
+- Until we complete all brackets in the string. If the stack is empty, it's balanced.
+Otherwise, unbalanced
+"""
+
+
+def test_27():
+    pass
+
+
+"""
+question 28
+Write an algorithm to justify text. Given a sequence of words and an integer
+line length k, return a list of strings which represents each line, fully
+justified.
+
+More specifically, you should have as many words as possible in each line. There
+should be at least one space between each word. Pad extra spaces when necessary
+so that each line has exactly length k. Spaces should be distributed as equally
+as possible, with the extra spaces, if any, distributed starting from the left.
+
+If you can only fit one word on a line, then you should pad the right-hand side
+with spaces.
+
+Each word is guaranteed not to be longer than k.
+
+For example, given the list of words ["the", "quick", "brown", "fox", "jumps",
+"over", "the", "lazy", "dog"] and k = 16, you should return the following:
+
+["the  quick brown", # 1 extra space on the left
+ "fox  jumps  over", # 2 extra spaces distributed evenly
+ "the   lazy   dog"] # 4 extra spaces distributed evenly"
+
+-------------------
+iterate words, trying to fit in as much words as possible.
+use two pointers, first pointer is the first word of current line and
+second pointer is the word to check whether it can be fit in to current line.
+
+["the", "quick", "brown", "fox", "jumps", "over", "the", "lazy", "dog"]
+   i1
+           i2
+initially i1 = 0
+cur_len = len(word[i1])
+when add new word[i2], new length is cur_len + len(word[i2]) + 1
+if cur_len is smaller or equal to k:
+    move i2 forward.
+otherwise:
+    create a new line with words from i1 to i2-1;
+        distribute the extra spaces evenly between words starting from left
+        remaining_spaces = k - cur_len
+        number of spaces in words: total_num = i2 - i1
+        even space number: even_spaces = 1 + remaining_spaces // total_num
+        extra_remaining: remaining_spaces % total_num
+    move i1 to i2 as the first word  and move i2 forward
+"""
+
+
+def justify_text(words, k):
+    # generate line with words [start, end)
+    # cur_len is the length with words and one space between words
+    def generate_one_line(start: int, end: int, cur_len: int):
+        new_line = ""
+        space_num = end - start - 1
+        if space_num == 1:
+            # only one word in the line
+            new_line += words[start]
+            new_line += " " * (k - len(words[start]))
+            return new_line
+        small_space_num = 1 + (k - cur_len) // (space_num)
+        small_spaces = " " * small_space_num
+        large_spaces = small_spaces + " "
+        # print(f"'{large_spaces}'")
+        large_space_num = (k - cur_len) % (space_num)
+        new_line += words[i1]
+        for i in range(1, space_num + 1):
+            if i <= large_space_num:
+                new_line += large_spaces
+            else:
+                new_line += small_spaces
+            new_line += words[start + i]
+        return new_line
+
+    lines = []
+    i1 = 0
+    cur_len = len(words[0])
+    for i2 in range(1, len(words)):
+        if cur_len + len(words[i2]) + 1 > k:
+            # needs to generate new line with words in [i1, i2)
+            lines.append(generate_one_line(i1, i2, cur_len))
+            i1 = i2
+            cur_len = len(words[i1])
+        else:
+            cur_len = cur_len + len(words[i2]) + 1
+    # process left_over words from i1 to the end
+    lines.append(generate_one_line(i1, len(words), cur_len))
+    return lines
+
+
+def test_28():
+    words = ["the", "quick", "brown", "fox", "jumps", "over", "the", "lazy", "dog"]
+    k = 16
+    assert justify_text(words, k) == [
+        "the  quick brown",
+        "fox  jumps  over",
+        "the   lazy   dog",
+    ]
+
+
+"""
+question 29
+Run-length encoding is a fast and simple method of encoding strings. The basic
+idea is to represent repeated successive characters as a single count and
+character. For example, the string "AAAABBBCCDAA" would be encoded as
+"4A3B2C1D2A".
+
+Implement run-length encoding and decoding. You can assume the string to be
+encoded have no digits and consists solely of alphabetic characters. You can
+assume the string to be decoded is valid.
+
+-------------------
+"AAAABBBCCDAA"
+     ^
+       ^
+42A3B2C
+^
+
+num = num * 10 + int(c)
+"""
+
+
+def run_length_encoding(text):
+    i1 = 0
+    encoded = ""
+    c1 = text[0]
+    for i2 in range(len(text)):
+        c2 = text[i2]
+        if c1 != c2:
+            encoded += str(i2 - i1)
+            encoded += c1
+            i1 = i2
+            c1 = c2
+    # process left_over
+    encoded += str(len(text) - i1)
+    encoded += text[i1]
+    return encoded
+
+
+def run_length_decoding(encoded):
+    num = 0
+    text = ""
+    for i2 in range(len(encoded)):
+        c = encoded[i2]
+        if "0" <= c <= "9":
+            num = num * 10 + int(c)
+        else:
+            # decode sequence of one character
+            text += c * num
+            num = 0
+    return text
+
+
+def test_29():
+    text = "AAAABBBCCDAA"
+    assert run_length_decoding(run_length_encoding(text)) == text
+    text = "AAAAAAAAAAAAAAAABBBCCDDDDDDDDDDDAA"
+    assert run_length_decoding(run_length_encoding(text)) == text
+
+
+"""
+question 30
+You are given an array of non-negative integers that represents a
+two-dimensional elevation map where each element is unit-width wall and the
+integer is the height. Suppose it will rain and all spots between two walls get
+filled up.
+
+Compute how many units of water remain trapped on the map in O(N) time and O(1)
+space.
+
+For example, given the input [2, 1, 2], we can hold 1 unit of water in the
+middle.
+
+Given the input [3, 0, 1, 3, 0, 5], we can hold 3 units in the first index, 2 in
+the second, and 3 in the fourth index (we cannot hold 5 since it would run off
+to the left), so we can trap 8 units of water.
+
+-------------------
+[2,1,2]
+|   |
+| | |
+for ith element,
+- left_max_wall is the max height in heights[0, i],
+- right_max_wall is the max height in heights[i, N-1]
+so the water height is min(left_max_wall, right_max_wall) - cur_wall_height
+
+[2,1,2]
+left_max_array: [2,2,2]
+right_max_array:[2,2,2]
+
+
+left_max_array = [0] * N
+left_max_array[0] = heights[0]
+for i in range(1, len(heights)):
+    left_max_array[i] = max(left_max_array[i-1], heights[i])
+right_max_array = [0] * N
+right_max_array[N-1] = heights[N-1]
+for i in range(N-2, -1, -1):
+    right_max_array = max(right_max_array(i+1), heights[i])
+time O(N), space O(N)
+TODO how to optimize to time O(N), space O(1)
+"""
+
+
+def totalTrappedWater(heights):
+    N = len(heights)
+    left_max_array = [0] * N
+    left_max_array[0] = heights[0]
+    for i in range(1, N):
+        left_max_array[i] = max(left_max_array[i - 1], heights[i])
+    right_max_array = [0] * N
+    right_max_array[N - 1] = heights[N - 1]
+    for i in range(N - 2, -1, -1):
+        right_max_array[i] = max(right_max_array[i + 1], heights[i])
+    water = 0
+    for i in range(N):
+        water += min(left_max_array[i], right_max_array[i]) - heights[i]
+    return water
+
+
+def test_30():
+    assert totalTrappedWater([2, 1, 2]) == 1
+    assert totalTrappedWater([3, 0, 1, 3, 0, 5]) == 8
+
+
+"""
+question 31
+The edit distance between two strings refers to the minimum number of character
+insertions, deletions, and substitutions required to change one string to the
+other. For example, the edit distance between “kitten” and “sitting” is three:
+substitute the “k” for “s”, substitute the “e” for “i”, and append a “g”.
+
+Given two strings, compute the edit distance between them.
+
+-------------------
+kitten
+^
+sitting
+^
+
+ if c1==c2:
+    i1++ i2++
+ else:
+    a. delete: i1++ -> go right
+    b. insert: i2++ -> go down
+    c. replace: i1++ i2++ -> go right-down
+    steps ++
+
+DP bottom-up
+  k i t t e n
+s 1 2 3 4 5 6
+i 2 1 2 3 4 5
+t 3 2 1 2 3 4
+t 4 3 2 1 2 3
+i 5 4 3 2 2 3
+n 6 5 4 3 3 2
+g 7 6 5 4 4 3
+"""
+
+
+def editDistance(src, dest):
+    init = 0 if src[0] == dest[0] else 1
+    pre = list(range(init, init + len(src)))
+    cur = [0] * len(src)
+    for i in range(1, len(dest)):
+        cur[0] = pre[0] + 1
+        for j in range(1, len(src)):
+            if src[j] == dest[i]:
+                cur[j] = pre[j - 1]
+            else:
+                cur[j] = min(min(pre[j - 1], pre[j]), cur[j - 1]) + 1
+        pre = cur
+        cur = [0] * len(src)
+    return pre[len(src) - 1]
+
+
+def test_31():
+    assert editDistance("kitten", "sitting") == 3
+    assert editDistance("sigtten", "sitting") == 3
+
+
 """
 question 32 TODO
 This problem was asked by Jane Street.

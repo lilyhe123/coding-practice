@@ -1,3 +1,5 @@
 note.md
 __pycache__/
 venv/
+*play.py
+stats/
