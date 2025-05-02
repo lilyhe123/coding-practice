@@ -1,6 +1,8 @@
-# give the description of a problem,
-# add the description to a block comment with each line less than 80.
-# and create qeustion and test functions for it.
+# Read problem description from a file
+# the first line of the file is the quesiton number.
+# Generate a output file with the description included in a block comment
+# with each line less than 80.
+# and create question and test functions for it.
 def format_question(text: str, num: int, limit: int) -> str:
     output = '"""\nquestion ' + str(num) + "\n"
     cur_line = ""

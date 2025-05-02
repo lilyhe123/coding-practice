@@ -1,7 +1,5 @@
 import random
 
-import matplotlib.pyplot as plt
-
 # uncomments the following line when need to debug stack overflow error
 # import sys
 # sys.setrecursionlimit(10)
@@ -47,131 +45,6 @@ def shuffleCards():
 def test_51():
     print(shuffleCards())
     print(shuffleCards())
-
-
-"""
-question 52
-Implement an LRU (Least Recently Used) cache. It should be able to be
-initialized with a cache size n, and contain the following methods:
-
-set(key, value): sets key to value. If there are already n items in the
-cache and we are adding a new item, then it should also remove the least
-recently used item.
-get(key): gets the value at key. If no such key exists, return null.
-Each operation should run in O(1) time.
--------------------
-
-double linked list:  ordered in the recently used time. remove/add, O(1) time
-  Node: key, value, pre, next
-Hashmap<K, Integer>: key -> Node
-get(): if exist, remove from the current place and add to
-       the head of the queue
-       if not exist, return null
-
-set(): if exist, update its value and move it to the head of the list
-       if not exist, add to the head of the list.
-       if size > N, remove tail element
-"""
-
-
-class ListNode:
-    def __init__(self, key, value):
-        self.key = key
-        self.value = value
-        self.pre = None
-        self.next = None
-
-
-# !! use dummy head and tail to simplify code
-class DoubleLinkedList:
-    def __init__(self):
-        self.head = ListNode(None, None)
-        self.tail = ListNode(None, None)
-        self.head.next = self.tail
-        self.tail.pre = self.head
-
-    # insert after the dummy head
-    def addNode(self, node):
-        node.next = self.head.next
-        node.pre = self.head
-        self.head.next.pre = node
-        self.head.next = node
-
-    def add(self, key, value) -> ListNode:
-        node = ListNode(key, value)
-        self.addNode(node)
-        return node
-
-    def moveToHead(self, node) -> None:
-        if node.pre == self.head:
-            return
-        # remove from current position
-        node.pre.next = node.next
-        node.next.pre = node.pre
-        self.addNode(node)
-
-    def removeTail(self) -> ListNode:
-        if self.head.next == self.tail:
-            return None
-        node = self.tail.pre
-        node.pre.next = self.tail
-        self.tail.pre = node.pre
-        return node
-
-    def print(self):
-        node = self.head.next
-        s = ""
-        while node != self.tail:
-            s += node.key + ": " + str(node.value)
-            if node.next:
-                s += ", "
-            node = node.next
-        print(s)
-
-
-class LRUCache:
-    def __init__(self, capacity):
-        self.capacity = capacity
-        self.myMap = {}
-        self.myList = DoubleLinkedList()
-
-    def set(self, key, value):
-        if key in self.myMap:
-            # update existing element
-            node = self.myMap[key]
-            node.value = value
-            self.myList.moveToHead(node)
-        else:
-            # create new element
-            node = self.myList.add(key, value)
-            self.myMap[key] = node
-            # if cache exceeds its capacity, remove tail element
-            if len(self.myMap) > self.capacity:
-                node = self.myList.removeTail()
-                self.myMap.pop(node.key)
-
-    def get(self, key):
-        if key in self.myMap:
-            node = self.myMap[key]
-            self.myList.moveToHead(node)
-            return node.value
-        else:
-            return None
-
-    def print(self):
-        self.myList.print()
-
-
-def test_52():
-    cache = LRUCache(5)
-    pairs = {"key1": 1, "key2": 2, "key3": 3, "key4": 4, "key5": 5, "key6": 6}
-    for k, v in pairs.items():
-        cache.set(k, v)
-    cache.print()
-    cache.get("key3")
-    cache.print()
-    cache.set("key4", 40)
-    cache.print()
 
 
 """
@@ -1027,7 +900,149 @@ def test_66():
 
 
 """
-question 67 TODO
+question 52
+Implement an LRU (Least Recently Used) cache. It should be able to be
+initialized with a cache size n, and contain the following methods:
+
+set(key, value): sets key to value. If there are already n items in the
+cache and we are adding a new item, then it should also remove the least
+recently used item.
+get(key): gets the value at key. If no such key exists, return null.
+Each operation should run in O(1) time.
+-------------------
+
+double linked list:  ordered in the recently used time. remove/add, O(1) time
+  Node: key, value, pre, next
+Hashmap<K, Integer>: key -> Node
+get(): if exist, remove from the current place and add to
+       the head of the queue
+       if not exist, return null
+
+set(): if exist, update its value and move it to the head of the list
+       if not exist, add to the head of the list.
+       if size > N, remove tail element
+"""
+
+
+class ListNode:
+    def __init__(self, key, value):
+        self.key = key
+        self.value = value
+        self.pre = None
+        self.next = None
+        # linkedList containing the node
+        self.list = None
+
+
+# !! use dummy head and tail to simplify code
+class DoubleLinkedList:
+    def __init__(self):
+        self.head = ListNode(None, None)
+        self.tail = ListNode(None, None)
+        self.head.next = self.tail
+        self.tail.pre = self.head
+
+    def isEmpty(self):
+        return self.head.next == self.tail
+
+    # insert after the dummy head
+    def addToHead(self, node):
+        node.next = self.head.next
+        node.pre = self.head
+        self.head.next.pre = node
+        self.head.next = node
+        node.list = self
+
+    def add(self, key, value) -> ListNode:
+        node = ListNode(key, value)
+        self.addToHead(node)
+        return node
+
+    def removeNode(self, node) -> None:
+        # remove from current position
+        node.pre.next = node.next
+        node.next.pre = node.pre
+
+    def moveToHead(self, node) -> None:
+        if node.pre == self.head:
+            return
+        self.removeNode(node)
+        self.addToHead(node)
+
+    def removeHead(self) -> ListNode:
+        if self.isEmpty():
+            return
+        node = self.head.next
+        self.head.next = node.next
+        node.next.pre = self.head
+        return node
+
+    def removeTail(self) -> ListNode:
+        if self.isEmpty():
+            return
+        node = self.tail.pre
+        node.pre.next = self.tail
+        self.tail.pre = node.pre
+        return node
+
+    def print(self):
+        node = self.head.next
+        s = ""
+        while node != self.tail:
+            s += node.key + ": " + str(node.value)
+            if node.next:
+                s += ", "
+            node = node.next
+        print(s)
+
+
+class LRUCache:
+    def __init__(self, capacity):
+        self.capacity = capacity
+        self.myMap = {}
+        self.myList = DoubleLinkedList()
+
+    def set(self, key, value):
+        if key in self.myMap:
+            # update existing element
+            node = self.myMap[key]
+            node.value = value
+            self.myList.moveToHead(node)
+        else:
+            # create new element
+            node = self.myList.add(key, value)
+            self.myMap[key] = node
+            # if cache exceeds its capacity, remove tail element
+            if len(self.myMap) > self.capacity:
+                node = self.myList.removeTail()
+                self.myMap.pop(node.key)
+
+    def get(self, key):
+        if key in self.myMap:
+            node = self.myMap[key]
+            self.myList.moveToHead(node)
+            return node.value
+        else:
+            return None
+
+    def print(self):
+        self.myList.print()
+
+
+def test_52():
+    cache = LRUCache(5)
+    pairs = {"key1": 1, "key2": 2, "key3": 3, "key4": 4, "key5": 5, "key6": 6}
+    for k, v in pairs.items():
+        cache.set(k, v)
+    cache.print()
+    cache.get("key3")
+    cache.print()
+    cache.set("key4", 40)
+    cache.print()
+
+
+"""
+!! question 67
 Implement an LFU (Least Frequently Used) cache. It should be able to be
 initialized with a cache size n, and contain the following methods:
 
@@ -1038,22 +1053,229 @@ then the least recently used key should be removed.
 
 get(key): gets the value at key. If no such key exists, return null.
 Each operation should run in O(1) time.
+-------------------
+
+When the cache is full, first try to remove the last frequenctly used item.
+If there is a tie, reove the least recently used key
+
+We need to record information of each key:
+usage frequency and last used time
+
+Node: key, value, freq, pre, next
+find an item by key with constant time, we need a map by key
+
+- key_map: key->Item
+when the cache is full, we need to remove the LFU item.
+To find it and remove it in constant time, we need a map by usage frequency
+and seperate double linked list for each freq, the list is ordered by LUT.
+- freq_map: freq -> double_list,
+  the list is ordered by LUT, LRU node is on the tail
+- minFreq: store the min frequency whose list are not empty
+
+set:
+    if key not exists:
+     if the cache is full, remove the LFU node.
+       find the list with minFreq, remove the tail of the list.
+       remove the node from key_map.
+
+     add the new node to key_map and freq_map with freq=1.
+     update minFreq to 1.
+    if key exists:
+     find the node in key_map.  time O(1)
+     update freq_map:
+       remove from current list, with pre and next we can do it in constant time.
+       the freq++ and add the item to the head of the list of the new freq.
+    update minFreq:
+       when remove for the list and list became empty, if minFreq is the freq, minFreq++.
+
+
+get: find the node in key_map, return its value. time O(1)
+
 """
 
 
+class LFUNode(ListNode):
+    def __init__(self, key, value):
+        super().__init__(key, value)
+        self.freq = 1
+
+
+class LFUCache:
+    def __init__(self, n: int):
+        self.n = n
+        self.key_map = {}
+        self.freq_map = {}
+        self.minFreq = 1
+
+    def size(self):
+        return len(self.key_map)
+
+    def set(self, key, val):
+        # key not exists
+        if key not in self.key_map:
+            if len(self.key_map) == self.n:
+                self.removeLFU()
+            node = LFUNode(key, val)
+            self.key_map[key] = node
+            freq = 1
+            if freq not in self.freq_map:
+                self.freq_map[freq] = DoubleLinkedList()
+            self.freq_map[freq].addToHead(node)
+            self.minFreq = 1
+        else:
+            # key exists
+            node = self.key_map[key]
+            node.value = val
+            # remove for current list
+            node.list.removeNode(node)
+            # update minFreq
+            if node.list.isEmpty() and self.minFreq == node.freq:
+                self.minFreq += 1
+            # add to next freq's list
+            node.freq += 1
+            if node.freq not in self.freq_map:
+                self.freq_map[node.freq] = DoubleLinkedList()
+            self.freq_map[node.freq].addToHead(node)
+
+    # no need to update minFreq since a new item is added when this method is called.
+    # minFreq will be updated later
+    def removeLFU(self):
+        node = self.freq_map[self.minFreq].removeTail()
+        if not node:
+            raise ValueError("List of minFreq is empty. Remove fail.")
+        del self.key_map[node.key]
+
+    def get(self, key):
+        if key in self.key_map:
+            return self.key_map[key].value
+        else:
+            return None
+
+
 def test_67():
-    pass
+    # test 1
+    n = 3
+    cache = LFUCache(n)
+    assert cache.get("a") is None
+    cache.set("a", 1)
+    cache.set("b", 2)
+    cache.set("c", 3)
+    assert cache.get("a") == 1
+    cache.set("d", 4)
+    cache.set("e", 5)
+    assert cache.size() == n
+    assert cache.get("a") is None
+    assert cache.get("b") is None
+    assert cache.get("c") == 3
+    assert cache.get("d") == 4
+    assert cache.get("e") == 5
+
+    # test 2
+    n = 3
+    cache = LFUCache(n)
+    assert cache.get("a") is None
+    cache.set("a", 1)
+    cache.set("b", 2)
+    cache.set("c", 3)  # c.freq=1
+    cache.set("a", 11)  # a.freq=2
+    cache.set("b", 22)  # b.freq=2
+    cache.set("d", 4)  # c is injected
+    assert cache.get("c") is None
+    cache.set("e", 5)  # d is injected
+    assert cache.get("d") is None
+    assert cache.get("a") == 11
+    assert cache.get("b") == 22
+    assert cache.get("e") == 5
+    assert cache.size() == n
+
+    # test 3
+    n = 3
+    cache = LFUCache(n)
+    assert cache.get("a") is None
+    cache.set("a", 1)
+    cache.set("b", 2)
+    cache.set("c", 3)
+    cache.set("a", 11)  # a.freq=2
+    cache.set("b", 22)  # b.freq=2
+    cache.set("c", 33)  # c.freq=2
+    # now minFreq is 2.
+    cache.set("d", 4)
+    assert cache.get("a") is None
+    # now minFreq is 1
+    cache.set("e", 5)
+    assert cache.get("d") is None
 
 
-def showHist():
-    total = 9999
-    nums = []
-    bin = 10
-    for i in range(total):
-        nums.append(random.randint(1, bin))
-    plt.title("Biased Distribution")
-    plt.hist(nums, bin)
-    plt.show()
+"""
+question 68
+On our special chessboard, two bishops attack each other if they share the same
+diagonal. This includes bishops that have another bishop located between them,
+i.e. bishops can attack through pieces.
+
+You are given N bishops, represented as (row, column) tuples on a M by M
+chessboard. Write a function to count the number of pairs of bishops that attack
+each other. The ordering of the pair doesn't matter: (1, 2) is considered the
+same as (2, 1).
+
+For example, given M = 5 and the list of bishops:
+
+(0, 0)
+(1, 2)
+(2, 2)
+(4, 0)
+
+The board would look like this:
+
+[b 0 0 0 0]
+[0 0 b 0 0]
+[0 0 b 0 0]
+[0 0 0 0 0]
+[b 0 0 0 0]
+
+You should return 2, since bishops 1 and 3 attack each other, as well as bishops
+3 and 4.
+
+-------------------
+1. brute-force approach
+Scan every diagonal to count number of bishops. Two categories of diagonals: go
+left-down and go right-down.
+If one diagonal has k bishops and they can make k(k-1)/2 pairs.
+time O(M^2), space O(1)
+
+2. Observed that cells in the same diagonal folow some patterns:
+either sums of row index and column index are the same, or diff of row index
+and column index are the same.
+Create two maps: sum_map: sum->freq and diff_map: dif->freq
+So scan the list of bishops, calculate the diff and sum of i and j and populate
+the two maps.
+time O(N), space O(N)
+
+"""
 
 
-# showHist()
+def get_pairs_of_bishops(bishops: list) -> int:
+    sum_map, diff_map = {}, {}
+    for i, j in bishops:
+        s = i + j
+        diff = i - j
+        if s not in sum_map:
+            sum_map[s] = 0
+        sum_map[s] += 1
+        if diff not in diff_map:
+            diff_map[diff] = 0
+        diff_map[diff] += 1
+    total = 0
+    for freq in sum_map.values():
+        if freq > 1:
+            total += freq * (freq - 1) // 2
+    for freq in diff_map.values():
+        if freq > 1:
+            total += freq * (freq - 1) // 2
+    return total
+
+
+def test_68():
+    bitshops = [(0, 0), (1, 2), (2, 2), (4, 0)]
+    assert get_pairs_of_bishops(bitshops) == 2
+    bitshops = [(0, 0), (1, 2), (2, 2), (3, 3), (2, 3), (4, 0)]
+    assert get_pairs_of_bishops(bitshops) == 5

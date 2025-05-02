@@ -3,7 +3,6 @@ import random
 import time
 from collections import deque
 from threading import Thread
-from typing import List
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -163,7 +162,7 @@ nums[i] = i+1
 """
 
 
-def findLowest(nums):
+def findLowest(nums: int) -> int:
     n = len(nums)
     for i in range(n):
         while nums[i] in range(1, n + 1) and i + 1 != nums[i]:
@@ -179,8 +178,8 @@ def findLowest(nums):
 
 
 def test_4():
-    print(findLowest([3, 4, -1, 1]))
-    print(findLowest([1, 2, 0]))
+    assert findLowest([3, 4, -1, 1]) == 2
+    assert findLowest([1, 2, 0]) == 3
 
 
 """
@@ -196,6 +195,11 @@ def cons(a, b):
         return f(a, b)
     return pair
 Implement car and cdr.
+
+-------------------
+Understand the problem
+cons() return a function 'pair and 'pair' takes another function 'f' as input.
+So car() and cdr() need to provide its own impl of function 'f' and pass it to 'pair'.
 """
 
 
@@ -221,8 +225,8 @@ def cdr(pair):
 
 
 def test_5():
-    print(car(cons(3, 4)))
-    print(cdr(cons(3, 4)))
+    assert car(cons(3, 4)) == 3
+    assert cdr(cons(3, 4)) == 4
 
 
 """
@@ -286,7 +290,7 @@ for i in range(2, len(msg)):
 """
 
 
-def getDecodingWays(msg):
+def getDecodingWays(msg: str) -> int:
     dp0, dp1, dp2 = 1, 0, 0
     # '111' 1,2,3
     if int(msg[0]) > 0:
@@ -304,8 +308,8 @@ def getDecodingWays(msg):
 
 
 def test_7():
-    print(getDecodingWays("111"))
-    print(getDecodingWays("1111111"))
+    assert getDecodingWays("111") == 3
+    assert getDecodingWays("1111111") == 21
 
 
 """
@@ -340,7 +344,7 @@ second element means the number of unival tree in this tree
 
 
 class TreeNode:
-    def __init__(self, val, left=None, right=None):
+    def __init__(self, val: int, left: object = None, right: object = None):
         self.val = val
         self.left = left
         self.right = right
@@ -356,8 +360,8 @@ class TreeNode:
             self.print_inorder(self.right)
 
 
-def getUnivalTreeNum(node):
-    def dfs(node):
+def getUnivalTreeNum(node: object) -> int:
+    def dfs(node: object) -> list:
         if not node:
             return [True, 0]
         # leaf node
@@ -428,7 +432,7 @@ dp[i] = max(dp[i-1], dp[i-2], dp[i-2]+nums[i])
 """
 
 
-def maxSum4NonAdjacent(nums):
+def maxSum4NonAdjacent(nums: list[int]) -> int:
     dp0, dp1, dp2 = nums[0], max(nums[0], nums[1]), 0
     for i in range(2, len(nums)):
         dp2 = max(max(dp0, dp1), dp0 + nums[i])
@@ -442,6 +446,8 @@ def test_9():
     assert maxSum4NonAdjacent([10, -1, 1, 2]) == 12
 
 
+test_9()
+
 """
 question 10
 Implement a job scheduler which takes in a function f and an integer n,
@@ -453,25 +459,22 @@ and calls f after n milliseconds.
 
 
 def scheduler():
-    def schedule(func, n):
-        time.sleep(n)
-        func()
+    def schedule(f, n):
+        time.sleep(n / 1000)
+        f()
 
     def hello(name):
         print("hello " + name)
 
-    job = Thread(target=schedule, args=(lambda: hello("from thread"), 2))
+    job = Thread(target=schedule, args=(lambda: hello("from thread"), 200))
     job.start()
 
     print("Thread, you there?")
-    time.sleep(3)
+    time.sleep(1)
     print("Hello to you too")
 
 
 def test_10():
-    import doctest
-
-    doctest.testmod(verbose=True)
     scheduler()
 
 
@@ -537,7 +540,7 @@ class TrieTree:
 
 
 class TrieNode:
-    def __init__(self, isWord=False):
+    def __init__(self, isWord: bool = False):
         self.isWord = isWord
         self.children = {}
 
@@ -546,7 +549,7 @@ class TrieTree:
     def __init__(self):
         self.root = TrieNode()
 
-    def add(self, query):
+    def add(self, query: str) -> None:
         node = self.root
         for c in query:
             if c not in node.children:
@@ -554,7 +557,7 @@ class TrieTree:
             node = node.children[c]
         node.isWord = True
 
-    def queryWithPrefix(self, prefix):
+    def queryWithPrefix(self, prefix: str) -> list[str]:
         # find the node with the prefix
         node = self.root
         for c in prefix:
@@ -566,7 +569,7 @@ class TrieTree:
         self.dfs(node, prefix, res)
         return res
 
-    def dfs(self, node, prefix, res):
+    def dfs(self, node: object, prefix: str, res: list[str]) -> None:
         if not node:
             return
         if node.isWord:
@@ -580,7 +583,7 @@ def test_11():
     queries = ["dog", "deer", "deal"]
     for s in queries:
         tree.add(s)
-    print(tree.queryWithPrefix("de"))
+    assert tree.queryWithPrefix("de") == ["deer", "deal"]
 
 
 """
@@ -1236,7 +1239,7 @@ time O(nm), space O(n)
 """
 
 
-def getOriginalWords(s: str, dictionary: List[str]) -> List[str]:
+def getOriginalWords(s: str, dictionary: list[str]) -> list[str]:
     # queue store the list of index along the way
     queue = deque()
     queue.append([0])
@@ -2241,7 +2244,7 @@ use tuple as the hashkey in a visited map
 """
 
 
-def smallestItinerary(flights: List[List[str]], start: str) -> List[str]:
+def smallestItinerary(flights: list[list[str]], start: str) -> list[str]:
     # construct the graph as adjList
     amap = {}
     visited = {}  # (src, dest) -> 0
@@ -2254,7 +2257,7 @@ def smallestItinerary(flights: List[List[str]], start: str) -> List[str]:
     for _, value in amap.items():
         value.sort()
 
-    def dfs(amap, visited, start, rtnList) -> List[str]:
+    def dfs(amap, visited, start, rtnList) -> list[str]:
         if len(rtnList) == len(visited) + 1:
             return rtnList
 
