@@ -1,3 +1,4 @@
+import heapq
 import random
 
 # uncomments the following line when need to debug stack overflow error
@@ -1094,6 +1095,7 @@ get: find the node in key_map, return its value. time O(1)
 """
 
 
+# !! class inheritance
 class LFUNode(ListNode):
     def __init__(self, key, value):
         super().__init__(key, value)
@@ -1279,3 +1281,409 @@ def test_68():
     assert get_pairs_of_bishops(bitshops) == 2
     bitshops = [(0, 0), (1, 2), (2, 2), (3, 3), (2, 3), (4, 0)]
     assert get_pairs_of_bishops(bitshops) == 5
+
+
+"""
+question 69
+Given a list of integers, return the largest product that can be made by
+multiplying any three integers.
+
+For example, if the list is [-10, -10, 5, 2], we should return 500, since that's
+-10 * -10 * 5.
+
+You can assume the list has at least three integers.
+
+-------------------
+If all positive integers, the largest product is contribute by the largest 3.
+But negative ones can be included, product of two negative ones might contribute
+to the largest product.
+So let's do this.
+get largest 3(l1, l2, l3) and smallest 2 (s1,s2).
+if l1 <= 0, (all negative), rst = l1 * l2 * l3
+elif s1 <= 0, s2 <= 0,  rst = l1 * max(l2*l3, s1*s2)
+
+Get largest 3, use a min_heap with size 3. time O(nlg3) -> O(n)
+Get smallest 2, use a max_heap with size 2. time O(nlg2) -> O(n)
+
+time O(n), space O(1)
+"""
+
+
+def getLargestProducct(nums):
+    min_size, max_size = 3, 2
+    minq, maxq = [], []
+    for num in nums:
+        heapq.heappush(minq, num)
+        heapq.heappush(maxq, -num)
+        if len(minq) > min_size:
+            heapq.heappop(minq)
+        if len(maxq) > max_size:
+            heapq.heappop(maxq)
+
+    # largest 3 in minq
+    p1 = heapq.heappop(minq) * heapq.heappop(minq)
+    largest = minq[0]
+    if largest <= 0:
+        return largest * p1
+    else:
+        # smallest 2 in maxq
+        p2 = maxq[0] * maxq[1]
+        return largest * max(p1, p2)
+
+
+def test_69():
+    nums = [-10, -10, 5, 2]
+    assert getLargestProducct(nums) == 500
+    nums = [-10, 3, 5, 2]
+    assert getLargestProducct(nums) == 30
+    nums = [-10, -3, 3, 5, 2]
+    assert getLargestProducct(nums) == 150
+    nums = [-2, -3, 3, 10, 3]
+    assert getLargestProducct(nums) == 90
+    nums = [-2, -3, 10]
+    assert getLargestProducct(nums) == 60
+    nums = [-2, -3, -10, -5, -1]
+    assert getLargestProducct(nums) == -6
+    nums = [-2, -3, -10, -5, 0]
+    assert getLargestProducct(nums) == 0
+
+
+"""
+question 70
+A number is considered perfect if its digits sum up to exactly 10.
+
+Given a positive integer n, return the n-th perfect number.
+
+For example, given 1, you should return 19. Given 2, you should return 28.
+
+-------------------
+It's a math problem.
+Identify the pattern of the number: 9K+1 with exceptions, e.g. 1, 100, 1000...
+
+9k+1:   10  19 28  37  46  55  64  73  82   91  100  109  118...   991 1000
+perfect: n   y  y   y   y   y   y   y   y    y    n   y     y       n     n
+
+Use a counter, iterate all 9K+1, starting from 19,
+calculating sum of the number's digits, if sum is 10, increase counter
+until counter reaches n, return the number
+"""
+
+
+def sumDigits(num):
+    sum = 0
+    while num > 0:
+        sum += num % 10
+        num //= 10
+    return sum
+
+
+def getPerfectNumber(n):
+    count = 1
+    num = 19
+    while count < n:
+        num += 9
+        if sumDigits(num) == 10:
+            count += 1
+
+    return num
+
+
+def test_70():
+    nums = []
+    for i in range(1, 500, 50):
+        nums.append(getPerfectNumber(i))
+    assert nums == [19, 613, 1432, 2422, 4015, 6022, 10180, 11143, 12232, 14041]
+
+
+"""
+question 72
+In a directed graph, each node is assigned an uppercase letter. We define a
+path's value as the number of most frequently-occurring letter along that path.
+For example, if a path in the graph goes through "ABACA", the value of the path
+is 3, since there are 3 occurrences of 'A' on the path.
+
+Given a graph with n nodes and m directed edges, return the largest value path
+of the graph. If the largest value is infinite, then return null.
+
+The graph is represented with a string and an edge list. The i-th character
+represents the uppercase letter of the i-th node. Each tuple in the edge list
+(i, j) means there is a directed edge from the i-th node to the j-th node.
+Self-edges are possible, as well as multi-edges.
+
+For example, the following input graph:
+ABACA
+[(0, 1),
+(0, 2),
+(2, 3),
+(3, 4)]
+Would have maximum value 3 using the path of vertices [0, 2, 3, 4], (A, A, C,
+A).
+
+The following input graph:
+A
+[(0, 0)]
+Should return null, since we have an infinite loop.
+
+-------------------
+In a graph the largest value path should be in one of the paths starting
+from nodes with no precedent node.
+So starting from one of the nodes, do a dfs or bfs traversal to the graph,
+if detecting a cycle return None. If no cycle, it's a tree. we calculate
+all the path from the root node to the leaf node, generate the str along
+each path and calulate the value and return the largest value.
+
+edge cases: self loop, no node with no prenodes
+
+First with the given input, we do some transformation.
+precount list: for each node, store number of precedent nodes for each node.
+next nodes list: for each node, store list of next nodes.
+
+time O(n+m), space O(n+m)
+"""
+
+
+def calculateValue(path):
+    freq_map = {}
+    for c in path:
+        if c not in freq_map:
+            freq_map[c] = 0
+        freq_map[c] += 1
+    return max(freq_map.values())
+
+
+def findLargestValuePath(nodes: str, edges: list):
+    # transform the input
+    N = len(nodes)
+    precounts = [0] * N
+    nextNodes = [[] for _ in range(N)]
+    for fromNode, toNode in edges:
+        if fromNode == toNode:
+            # self loop
+            return None
+        precounts[toNode] += 1
+        nextNodes[fromNode].append(toNode)
+    # find node with precount = 0
+    roots = []
+    for i, count in enumerate(precounts):
+        if count == 0:
+            roots.append(i)
+
+    if len(roots) == 0:
+        return None
+
+    # return True if a cycle detected
+    def dfs(
+        i: int, path: list[str], visited: list[bool], largestValue: list[int]
+    ) -> bool:
+        # visit the same node twice in one path, a cycle is detected
+        if visited[i]:
+            return True
+        visited[i] = True
+        path.append(nodes[i])
+        if not nextNodes[i]:
+            # reach a leaf node
+            val = calculateValue(path)
+            largestValue[0] = max(largestValue[0], val)
+        else:
+            for next in nextNodes[i]:
+                if dfs(next, path, visited, largestValue):
+                    return True
+        visited[i] = False
+        path.pop(-1)
+        return False
+
+    largestValue = [0]
+    path = []
+    visited = [False] * N
+    for root in roots:
+        if dfs(root, path, visited, largestValue):
+            return None
+    return largestValue[0] if largestValue[0] > 0 else None
+
+
+def test_72():
+    # no loop
+    nodes = "ABACA"
+    edges = [(0, 1), (0, 2), (2, 3), (3, 4)]
+    findLargestValuePath(nodes, edges) == 3
+    # self loop
+    nodes = "A"
+    edges = [(0, 0)]
+    findLargestValuePath(nodes, edges) is None
+    # other loop
+    nodes = "ABACA"
+    edges = [(0, 1), (0, 2), (2, 3), (3, 2), (3, 4)]
+    findLargestValuePath(nodes, edges) is None
+
+
+"""
+question 73
+Given the head of a singly linked list, reverse it in-place.
+
+-------------------
+     A -> B -> C -> D -> E -> F
+p    c
+                              p    c
+
+pre, cur = None, head
+while cur:
+  next = cur.next
+  cur.next = pre
+  pre = cur
+  cur = next
+return pre
+
+"""
+
+
+def test_73():
+    pass
+
+
+"""
+question 74
+Suppose you have a multiplication table that is N by N. That is, a 2D array
+where the value at the i-th row and j-th column is (i + 1) * (j + 1) (if
+0-indexed) or i * j (if 1-indexed).
+
+Given integers N and X, write a function that returns the number of times X
+appears as a value in an N by N multiplication table.
+
+For example, given N = 6 and X = 12, you should return 4, since the
+multiplication table looks like this:
+
+| 1 | 2 | 3 | 4 | 5 | 6 |
+| 2 | 4 | 6 | 8 | 10 | 12 |
+| 3 | 6 | 9 | 12 | 15 | 18 |
+| 4 | 8 | 12 | 16 | 20 | 24 |
+| 5 | 10 | 15 | 20 | 25 | 30 |
+| 6 | 12 | 18 | 24 | 30 | 36 |
+
+And there are 4 12's in the table.
+
+-------------------
+1. brute force: check every cell in the N*N table. count the occurrance of X.
+   time O(N*N), space O(1)
+
+2. basically we are looking for pairs of integers (i, j)
+   that i*j = X and both x and j in range [1, N]
+   iterate integer in range [1, N], if the integer is divided by X and the result of the
+   division is also in range [1, N], there is one occurence of X.
+   time O(N), space O(1)
+
+edge cases: X < N
+"""
+
+
+def getOccurance(N: int, X: int):
+    end = min(N, X)
+    count = 0
+    for i in range(1, end + 1):
+        if X % i == 0 and X // i <= end:
+            count += 1
+    return count
+
+
+def test_74():
+    assert getOccurance(6, 12) == 4
+    assert getOccurance(6, 20) == 2
+    assert getOccurance(6, 2) == 2
+
+
+"""
+question 75
+Given an array of numbers, find the length of the longest increasing subsequence
+in the array. The subsequence does not necessarily have to be contiguous.
+
+For example, given the array
+[0, 8, 4, 12, 2, 10, 6, 14, 1, 9, 5, 13, 3, 11, 7, 15],
+the longest increasing subsequence has length 6: it is 0, 2, 6, 9, 11, 15.
+
+-------------------
+[0, 8, 4, 12, 2, 10, 6, 14, 1, 9, 5, 13, 3, 11, 7, 15]
+ 1  2  2   3  2   3  3   4  2  4  3   4  3   5  4   6
+
+bottom-up dynamic programming
+create dp array with length N
+For i-th element in dp array, it represent the size of longest subsequence ending
+in ith element in the given array.
+
+For i-th element in dp array
+  dp[i] = max(dp[j]+1) when nums[i] > nums[j],  j in range [0, i-1]
+
+time O(N^2), space O(N), N is the length of given array
+"""
+
+
+def getLIS(nums):
+    N = len(nums)
+    dp = [0] * N
+    dp[0] = 1
+    longest = 1
+    for i in range(1, N):
+        for j in range(0, i):
+            if nums[j] < nums[i]:
+                dp[i] = max(dp[i], dp[j] + 1)
+        longest = max(dp[i], longest)
+    return longest
+
+
+def test_75():
+    nums = [0, 8, 4, 12, 2, 10, 6, 14, 1, 9, 5, 13, 3, 11, 7, 15]
+    assert getLIS(nums) == 6
+    nums = [0, 8, 4, 12, 2, 10, 6, 14, 1, 9, 5, 13, 3, 11, 7, 15, 8, 7, 3]
+    assert getLIS(nums) == 6
+
+
+test_75()
+
+"""
+question 76
+You are given an N by M 2D matrix of lowercase letters. Determine the minimum
+number of columns that can be removed to ensure that each row is ordered from
+top to bottom lexicographically. That is, the letter at each column is
+lexicographically later as you go down each row. It does not matter whether each
+row itself is ordered lexicographically.
+
+For example, given the following table:
+cba
+daf
+ghi
+
+This is not ordered because of the a in the center. We can remove the second
+column to make it ordered:
+ca
+df
+gi
+
+So your function should return 1, since we only needed to remove 1 column.
+
+As another example, given the following table:
+abcdef
+
+Your function should return 0, since the rows are already ordered (there's only
+one row).
+
+As another example, given the following table:
+zyx
+wvu
+tsr
+
+Your function should return 3, since we would need to remove all the columns to
+order it.
+
+-------------------
+abcd  cdef  efgh
+
+"""
+
+
+def question76():
+    pass
+
+
+def test_76():
+    pass
+
+
+test_76()

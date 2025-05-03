@@ -1,36 +1,43 @@
 """
-question 68
-On our special chessboard, two bishops attack each other if they share the same
-diagonal. This includes bishops that have another bishop located between them,
-i.e. bishops can attack through pieces.
+question 76
+You are given an N by M 2D matrix of lowercase letters. Determine the minimum
+number of columns that can be removed to ensure that each row is ordered from
+top to bottom lexicographically. That is, the letter at each column is
+lexicographically later as you go down each row. It does not matter whether each
+row itself is ordered lexicographically.
 
-You are given N bishops, represented as (row, column) tuples on a M by M
-chessboard. Write a function to count the number of pairs of bishops that attack
-each other. The ordering of the pair doesn't matter: (1, 2) is considered the
-same as (2, 1).
+For example, given the following table:
 
-For example, given M = 5 and the list of bishops:
+cba
+daf
+ghi
 
-(0, 0)
-(1, 2)
-(2, 2)
-(4, 0)
+This is not ordered because of the a in the center. We can remove the second
+column to make it ordered:
+ca
+df
+gi
 
-The board would look like this:
+So your function should return 1, since we only needed to remove 1 column.
 
-[b 0 0 0 0]
-[0 0 b 0 0]
-[0 0 b 0 0]
-[0 0 0 0 0]
-[b 0 0 0 0]
+As another example, given the following table:
+abcdef
 
-You should return 2, since bishops 1 and 3 attack each other, as well as bishops
-3 and 4.
+Your function should return 0, since the rows are already ordered (there's only
+one row).
+
+As another example, given the following table:
+zyx
+wvu
+tsr
+
+Your function should return 3, since we would need to remove all the columns to
+order it.
 
 -------------------
 
 
 """
-def question68(): pass
-def test_68(): pass
-test_68()
+def question76(): pass
+def test_76(): pass
+test_76()
