@@ -1638,7 +1638,7 @@ def test_75():
 test_75()
 
 """
-question 76
+question 76 TODO
 You are given an N by M 2D matrix of lowercase letters. Determine the minimum
 number of columns that can be removed to ensure that each row is ordered from
 top to bottom lexicographically. That is, the letter at each column is
@@ -1686,4 +1686,167 @@ def test_76():
     pass
 
 
-test_76()
+"""
+question 77
+Given a list of possibly overlapping intervals, return a new list of intervals
+where all overlapping intervals have been merged.
+
+The input list is not necessarily ordered in any way.
+
+For example, given [(1, 3), (5, 8), (4, 10), (20, 25)], you should return [(1,
+3), (4, 10), (20, 25)].
+
+-------------------
+1. Sort the interval list by start time.
+2. use two pointers to iterate the sorted list.
+   p1 points to the last merged interval, p2 points to the interval to check.
+   if the two intervals are overlapped:
+     merge them and save the merged interval to first interval. p2 moves forward.
+   othewise,
+     p1 moves forward and save the second list to p1. p2 moves forward.
+time O(n), space O(1)
+"""
+
+
+def mergeIntervals(intervals):
+    intervals.sort(key=lambda x: x[0])
+    merged = [intervals[0]]
+    p1 = 0
+    for p2 in range(1, len(intervals)):
+        s1, e1 = merged[p1]
+        s2, e2 = intervals[p2]
+        if s2 <= e1:  # overlapped
+            merged[p1] = (s1, max(e1, e2))
+        else:
+            p1 += 1
+            merged.append(intervals[p2])
+    return merged
+
+
+def test_77():
+    intervals = [(1, 3), (5, 8), (4, 10), (20, 25)]
+    assert mergeIntervals(intervals) == [(1, 3), (4, 10), (20, 25)]
+    intervals = [(1, 10), (15, 21), (3, 8), (20, 25), [11, 18], [30, 50]]
+    assert mergeIntervals(intervals) == [(1, 10), (11, 25), [30, 50]]
+
+
+"""
+question 78
+Given k sorted singly linked lists, write a function to merge all the lists into
+one sorted singly linked list.
+
+-------------------
+use heap
+1. put k list to the heap, comparing by head's value
+2. pop the list from the heap:
+   Add its head element to the return list.
+   move the head to next element. If head is not none, add it to the heap.
+3. repeat #2 until heap is empty.
+   we can do some optimzation when the heap has only one elment.
+
+time O(nlgk), n is the total number of element in the k list. space O(k)
+"""
+
+
+def question78():
+    pass
+
+
+def test_78():
+    pass
+
+
+"""
+question 79
+Given an array of integers, write a function to determine whether the array
+could become non-decreasing by modifying at most 1 element.
+
+For example, given the array [10, 5, 7], you should return true, since we can
+modify the 10 into a 1 to make the array non-decreasing.
+
+Given the array [10, 5, 1], you should return false, since we can't modify any
+one element to get a non-decreasing array.
+
+-------------------
+Scan the array from left to right, there should be at most one decreaing happen.
+If the decreasing happend at the second element, we can change the first element
+to a value less than the second one. So return true.
+If the decreasing happend at the last element, we can change the last element to
+a value larger than its previous one. So return true.
+But if the descreasing happens in the middle, it depends.
+There is a valley we need to check the previous element and next element of the valley.
+if pre <= next, we can change the valley to a vlue in between. otherwise we can not.
+
+"""
+
+
+def canBecomeNonincreasing(nums):
+    count = 0
+    valley_idx = 0
+    pre = nums[0]
+    for i in range(1, len(nums)):
+        if nums[i] < pre:
+            count += 1
+            valley_idx = i
+        pre = nums[i]
+    if count == 0:
+        return True
+    if count > 1:
+        return False
+    # count = 1
+    if (
+        valley_idx == 1
+        or valley_idx == len(nums) - 1
+        or nums[valley_idx - 1] <= nums[valley_idx + 1]
+    ):
+        return True
+    else:
+        return False
+
+
+def test_79():
+    nums = [10, 5, 7]
+    assert canBecomeNonincreasing(nums)
+    nums = [10, 5, 1]
+    assert not canBecomeNonincreasing(nums)
+    nums = [1, 5, 2, 7]
+    assert canBecomeNonincreasing(nums)
+    nums = [1, 5, 2, 3]
+    assert not canBecomeNonincreasing(nums)
+    nums = [1, 2, 3, -10]
+    assert canBecomeNonincreasing(nums)
+
+
+"""
+question 80
+Given the root of a binary tree, return a deepest node. For example, in the
+following tree, return d.
+
+    a
+   / \
+  b   c
+ /
+d
+-------------------
+create a recursive function to travel the tree in depth-first traversal
+and return a pair, first is the depth of the tree and second is the deepest node.
+
+def dfs(tree, depth):
+    if not tree:
+        return (0, None)
+    # leaf node
+    if not tree.left and not tree.right:
+        return (depth, tree)
+    left = dfs(tree.left, depth+1)
+    right = dfs(trree.right, depth+1)
+    return left if left[0] > right[0] else right
+
+"""
+
+
+def question80():
+    pass
+
+
+def test_80():
+    pass
