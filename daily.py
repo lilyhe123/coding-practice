@@ -1977,6 +1977,7 @@ def readN(n):
 
 def test_82():
     global idx
+    idx = 0
     assert len(readN(20)) == 20
     idx = 0
     assert len(readN(14)) == 14
