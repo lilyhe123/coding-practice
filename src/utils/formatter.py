@@ -1,15 +1,18 @@
 #
 # Utility to generate code template for a question.
 #
-# Read problem description from a file.
+# Read from a file.
 # The first line of the file is the question number.
+# Remaining lines are the problem's description.
+
 # Generate an output file with the description included in a block comment.
 # with each line less than 80.
 # and create question function and test function.
 #
+import os
 
-from_file = "src/question.txt"
-to_file = "src/daily.py"
+from_file = "src/utils/question.txt"
+to_dir = "src/"
 
 
 def format_question(text: str, num: int, limit: int) -> str:
@@ -46,30 +49,26 @@ def read_and_format(input_file, output_file):
     with open(input_file, "r") as input_obj:
         lines = input_obj.readlines()
         text = ""
+        suffix = ""
         for i, line in enumerate(lines):
             if i == 0:
+                suffix = line.strip()
+                while len(suffix) < 3:
+                    suffix = "0" + suffix
                 num = int(line.strip())
             else:
                 text += line
-
+    output_file += suffix + ".py"
+    if os.path.isfile(output_file):
+        print(output_file, "already exists. Do nothing.")
+        return
     output = format_question(text, num, 80)
-    test_method = "test_" + str(num) + "()"
-    with open(output_file, "a+") as output_obj:
-        output_obj.seek(0)
-        lines = output_obj.readlines()
-        for line in lines:
-            if test_method in line:
-                print(
-                    "The question is already included in ",
-                    output_file + ".",
-                    "Do Nothing.",
-                )
-                return
+    with open(output_file, "w") as output_obj:
         output_obj.write(output)
 
 
 def generate():
-    read_and_format(from_file, to_file)
+    read_and_format(from_file, to_dir)
 
 
 if __name__ == "__main__":

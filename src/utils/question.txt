@@ -1,4 +1,2 @@
-82
-Using a read7() method that returns 7 characters from a file, implement readN(n) which reads n characters.
-
-For example, given a file with the content “Hello world”, three read7() returns “Hello w”, “orld” and then “”.
+85
+Given three 32-bit integers x, y, and b, return x if b is 1 and y if b is 0, using only mathematical or bit operations. You can assume b can only be 1 or 0.

@@ -101,7 +101,7 @@ class DoubleLinkedList:
 
 
 class TreeNode:
-    def __init__(self, val: int, left: object = None, right: object = None):
+    def __init__(self, val, left: object = None, right: object = None):
         self.val = val
         self.left = left
         self.right = right
