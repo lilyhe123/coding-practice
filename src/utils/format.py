@@ -7,6 +7,11 @@
 # with each line less than 80.
 # and create question function and test function.
 #
+
+from_file = "src/question.txt"
+to_file = "src/daily.py"
+
+
 def format_question(text: str, num: int, limit: int) -> str:
     output = '\n"""\nquestion ' + str(num) + "\n"
     cur_line = ""
@@ -64,7 +69,7 @@ def read_and_format(input_file, output_file):
 
 
 def generate():
-    read_and_format("src/question.txt", "src/daily.py")
+    read_and_format(from_file, to_file)
 
 
 if __name__ == "__main__":
