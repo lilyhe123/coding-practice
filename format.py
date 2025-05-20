@@ -1,10 +1,12 @@
 # Read problem description from a file
-# the first line of the file is the quesiton number.
-# Generate a output file with the description included in a block comment
+# the first line of the file is the question number.
+# Generate an output file with the description included in a block comment
 # with each line less than 80.
 # and create question and test functions for it.
+#
+# read from question.txt, write to daily.py
 def format_question(text: str, num: int, limit: int) -> str:
-    output = '"""\nquestion ' + str(num) + "\n"
+    output = '\n"""\nquestion ' + str(num) + "\n"
     cur_line = ""
     for line in text.splitlines():
         for token in line.split(" "):
@@ -34,8 +36,8 @@ def format_question(text: str, num: int, limit: int) -> str:
 
 
 def read_and_format(input_file, output_file):
-    with open(input_file) as file_object:
-        lines = file_object.readlines()
+    with open(input_file, "r") as input_obj:
+        lines = input_obj.readlines()
         text = ""
         for i, line in enumerate(lines):
             if i == 0:
@@ -44,8 +46,19 @@ def read_and_format(input_file, output_file):
                 text += line
 
     output = format_question(text, num, 80)
-    with open(output_file, "w") as file_object:
-        file_object.write(output)
+    test_method = "test_" + str(num) + "()"
+    with open(output_file, "a+") as output_obj:
+        output_obj.seek(0)
+        lines = output_obj.readlines()
+        for line in lines:
+            if test_method in line:
+                print(
+                    "The question is already included in ",
+                    output_file + ".",
+                    "Do Nothing.",
+                )
+                return
+        output_obj.write(output)
 
 
-read_and_format("question.txt", "output.txt")
+read_and_format("question.txt", "daily.py")
