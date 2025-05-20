@@ -61,4 +61,4 @@ def read_and_format(input_file, output_file):
         output_obj.write(output)
 
 
-read_and_format("question.txt", "daily.py")
+read_and_format("src/question.txt", "src/daily.py")

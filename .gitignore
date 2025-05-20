@@ -4,3 +4,4 @@ venv/
 stats/
 .vscode
 sync.sh
+src/question.txt
