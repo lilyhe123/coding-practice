@@ -50,7 +50,7 @@ get: find the node in key_map, return its value. time O(1)
 
 """
 
-from ds.classes import DoubleLinkedList, DoubleLinkedNode
+from ds import DoubleLinkedList, DoubleLinkedNode
 
 
 # !! class inheritance

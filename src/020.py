@@ -35,7 +35,7 @@ head1 = pre
    use next pointer to point to its previous.
 """
 
-from ds.classes import LinkedNode
+from ds import LinkedNode
 
 
 def revert(head):

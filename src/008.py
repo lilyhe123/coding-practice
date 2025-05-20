@@ -28,7 +28,7 @@ second element means the number of unival tree in this tree
 
 """
 
-from ds.classes import TreeNode
+from ds import TreeNode
 
 
 def getUnivalTreeNum(node: object) -> int:

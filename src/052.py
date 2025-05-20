@@ -22,7 +22,7 @@ set(): if exist, update its value and move it to the head of the list
        if size > N, remove tail element
 """
 
-from ds.classes import DoubleLinkedList
+from ds import DoubleLinkedList
 
 
 class LRUCache:
