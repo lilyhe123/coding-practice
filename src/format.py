@@ -1,10 +1,12 @@
-# Read problem description from a file
-# the first line of the file is the question number.
-# Generate an output file with the description included in a block comment
-# with each line less than 80.
-# and create question and test functions for it.
 #
-# read from question.txt, write to daily.py
+# Utility to generate code template for a question.
+#
+# Read problem description from a file.
+# The first line of the file is the question number.
+# Generate an output file with the description included in a block comment.
+# with each line less than 80.
+# and create question function and test function.
+#
 def format_question(text: str, num: int, limit: int) -> str:
     output = '\n"""\nquestion ' + str(num) + "\n"
     cur_line = ""
@@ -61,4 +63,9 @@ def read_and_format(input_file, output_file):
         output_obj.write(output)
 
 
-read_and_format("src/question.txt", "src/daily.py")
+def generate():
+    read_and_format("src/question.txt", "src/daily.py")
+
+
+if __name__ == "__main__":
+    generate()
