@@ -28,22 +28,7 @@ second element means the number of unival tree in this tree
 
 """
 
-
-class TreeNode:
-    def __init__(self, val: int, left: object = None, right: object = None):
-        self.val = val
-        self.left = left
-        self.right = right
-
-    def print(self):
-        print(self.val)
-
-    def print_inorder(self):
-        if self.left:
-            self.print_inorder(self.left)
-        self.print()
-        if self.right:
-            self.print_inorder(self.right)
+from ds.classes import TreeNode
 
 
 def getUnivalTreeNum(node: object) -> int:
@@ -84,3 +69,7 @@ def test_8():
         ),
     )
     assert getUnivalTreeNum(root) == 5
+
+
+if __name__ == "__main__":
+    test_8()

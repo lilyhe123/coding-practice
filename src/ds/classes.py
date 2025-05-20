@@ -1,4 +1,34 @@
-class ListNode:
+class LinkedNode:
+    def __init__(self, val):
+        self.val = val
+        self.next = None
+
+    def print(self):
+        node = self
+        s = ""
+        while node:
+            s += str(node.val)
+            if node.next:
+                s += "->"
+            node = node.next
+        print(s)
+
+    @staticmethod
+    def createLinkedList(nums):
+        head, pre = None, None
+
+        for num in nums:
+            node = LinkedNode(num)
+            if not head:
+                head = node
+                pre = node
+            else:
+                pre.next = node
+            pre = node
+        return head
+
+
+class DoubleLinkedNode:
     def __init__(self, key, value):
         self.key = key
         self.value = value
@@ -11,8 +41,8 @@ class ListNode:
 # !! use dummy head and tail to simplify code
 class DoubleLinkedList:
     def __init__(self):
-        self.head = ListNode(None, None)
-        self.tail = ListNode(None, None)
+        self.head = DoubleLinkedNode(None, None)
+        self.tail = DoubleLinkedNode(None, None)
         self.head.next = self.tail
         self.tail.pre = self.head
 
@@ -27,8 +57,8 @@ class DoubleLinkedList:
         self.head.next = node
         node.list = self
 
-    def add(self, key, value) -> ListNode:
-        node = ListNode(key, value)
+    def add(self, key, value) -> DoubleLinkedNode:
+        node = DoubleLinkedNode(key, value)
         self.addToHead(node)
         return node
 
@@ -43,7 +73,7 @@ class DoubleLinkedList:
         self.removeNode(node)
         self.addToHead(node)
 
-    def removeHead(self) -> ListNode:
+    def removeHead(self) -> DoubleLinkedNode:
         if self.isEmpty():
             return
         node = self.head.next
@@ -51,7 +81,7 @@ class DoubleLinkedList:
         node.next.pre = self.head
         return node
 
-    def removeTail(self) -> ListNode:
+    def removeTail(self) -> DoubleLinkedNode:
         if self.isEmpty():
             return
         node = self.tail.pre

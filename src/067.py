@@ -50,11 +50,11 @@ get: find the node in key_map, return its value. time O(1)
 
 """
 
-from ds.classes import DoubleLinkedList, ListNode
+from ds.classes import DoubleLinkedList, DoubleLinkedNode
 
 
 # !! class inheritance
-class LFUNode(ListNode):
+class LFUNode(DoubleLinkedNode):
     def __init__(self, key, value):
         super().__init__(key, value)
         self.freq = 1

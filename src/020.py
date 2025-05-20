@@ -35,21 +35,7 @@ head1 = pre
    use next pointer to point to its previous.
 """
 
-
-class LinkedNode:
-    def __init__(self, val):
-        self.val = val
-        self.next = None
-
-    def print(self):
-        node = self
-        s = ""
-        while node:
-            s += str(node.val)
-            if node.next:
-                s += "->"
-            node = node.next
-        print(s)
+from ds.classes import LinkedNode
 
 
 def revert(head):
@@ -60,20 +46,6 @@ def revert(head):
         pre = cur
         cur = next
     return pre
-
-
-def createLinkedList(nums):
-    head, pre = None, None
-
-    for num in nums:
-        node = LinkedNode(num)
-        if not head:
-            head = node
-            pre = node
-        else:
-            pre.next = node
-        pre = node
-    return head
 
 
 def getIntersectingNode(head1, head2):
@@ -97,8 +69,8 @@ def getIntersectingNode(head1, head2):
 
 
 def runOneTest20(array_one, array_two, expected):
-    head1 = createLinkedList(array_one)
-    head2 = createLinkedList(array_two)
+    head1 = LinkedNode.createLinkedList(array_one)
+    head2 = LinkedNode.createLinkedList(array_two)
     if not expected:
         assert getIntersectingNode(head1, head2) is None
     else:
@@ -121,3 +93,7 @@ def test_20():
     array_one = [1, 15, 20, 16, 10]
     array_two = [1, 15, 20, 16, 10]
     runOneTest20(array_one, array_two, 1)
+
+
+if __name__ == "__main__":
+    test_20()
